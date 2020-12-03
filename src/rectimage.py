@@ -28,7 +28,7 @@ def crop_wcenter(img, rw, rh1_, rh2_):
     return img[int(rh2 * hei):int(rh2 * hei + rh1 * hei), int(cx - rw * wid):int(cx + rw * wid),:]
     
     
-cimg = crop_wcenter(img1, 0.25, 0.02 ,0.1)
+cimg = crop_wcenter(img1, 0.25, 0.12 ,0.14)
 cv2.imshow("cropped",cimg)
 key = cv2.waitKey(0)
 
