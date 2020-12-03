@@ -11,3 +11,7 @@
 - ヤグラカウント: `cimg = crop_wcenter(img1, 0.25, 0.12 ,0.14)`
 
 ![](src/yagura_count.png)
+
+- マップを開いている時左上に出るやつ：`cimg = crop_whrate(img1, 0, 0.1 ,0, 0.18)`
+
+![](src/MapIcon.png)
