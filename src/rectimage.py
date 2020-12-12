@@ -71,14 +71,14 @@ def crop_whrate(img, rw1_, rw2_, rh1_, rh2_):
 
 
 
-img1 = cv2.imread("ikaimg2.png")
+img1 = cv2.imread("ikaimg1.png")
 
 hei, wid, _ = img1.shape
 cy, cx = hei / 2, wid / 2
 
 
 #cimg = crop_wcenter(img1, 0.25, 0.12 ,0.14)
-cimg = crop_whrate(img1, 0, 0.1 ,0, 0.18)
+cimg = crop_whrate(img1, 0.3, 0.45 ,0.02, 0.08)
 
 cv2.imshow("cropped",cimg)
 key = cv2.waitKey(0)
