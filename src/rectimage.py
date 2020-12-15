@@ -91,17 +91,42 @@ def crop_whrate(img, rw1_, rw2_, rh1_, rh2_):
         return img[int(rh2 * hei):int(rh1 * hei),int(rw2 * wid):int(rw1 * wid)]
 
 
-img1 = cv2.imread("ikaimg1.png")
+def drawrect(frame,bbox,color=(0,255,0)):
+    p1 = (int(bbox[0]), int(bbox[1]))
+    p2 = (int(bbox[0] + bbox[2]), int(bbox[1] + bbox[3]))
+    cv2.rectangle(frame, p1, p2, color, 2, 1)
+    return frame
 
-hei, wid, _ = img1.shape
-cy, cx = hei / 2, wid / 2
 
+if __name__ == "__main__":
+    
+    img1 = cv2.imread("ikaimg1.png")
+    
+    if len(img1.shape)==3: 
+        hei, wid, col = img1.shape
+    else:
+        hei, wid = img1.shape
 
-#cimg = crop_wcenter(img1, 0.25, 0.12 ,0.14)
-cimg = crop_whrate(img1, 0.3, 0.45 ,0.02, 0.08)
+    #cimg = crop_wcenter(img1, 0.25, 0.12 ,0.14)
+    cimg = crop_whrate(img1, 0.28, 0.457 ,0.0268, 0.1037)
+    cimg = crop_whrate(img1, 0.543, 0.72 ,0.0268, 0.1037)
+    
+    cv2.imshow("cropped",cimg)
+    key = cv2.waitKey(0)
 
-cv2.imshow("cropped",cimg)
-key = cv2.waitKey(0)
-
-if key == ord('s'):
-    cv2.imwrite("save.png",cimg)
+    if key == ord('s'):
+        cv2.imwrite("save.png", cimg)
+        exit(0)
+    elif key == ord('r'):
+        try:
+            while 1:
+                rect = cv2.selectROI(img1, False)
+                print(rect)
+                print(rect[0]/wid,rect[0]/wid+rect[2]/wid,rect[1]/hei,rect[1]/hei+rect[3]/hei)
+                cv2.imshow("rectimage",drawrect(img1, rect))
+                key = cv2.waitKey(0)
+                
+                if key == ord('q'):
+                    exit(0)
+        except KeyboardInterrupt:
+            exit(0)
