@@ -4,10 +4,14 @@ import numpy as np
 
 def crop_wcenter(img, rw, rh1_, rh2_):
     try:
-        hei, wid, col = img.shape
-        print(hei,wid)
-    except:
-        print("input should be color image!")
+        if len(img.shape)==3: 
+            hei, wid, col = img.shape
+            color = True
+        else:
+            hei, wid = img.shape
+            color = False
+    except Exception as e:
+        print(e)
         return []
 
     cy, cx = hei / 2, wid / 2
@@ -21,14 +25,21 @@ def crop_wcenter(img, rw, rh1_, rh2_):
     if rh1 > 1 or rh2 < 0:
         print("height rate must between 0 to 1!")
         return []
-    return img[int(rh2 * hei):int(rh2 * hei + rh1 * hei), int(cx - rw * wid):int(cx + rw * wid),:]
-    
+    if color:
+        return img[int(rh2 * hei):int(rh1 * hei), int(cx - rw * wid):int(cx + rw * wid),:]
+    else:
+        return img[int(rh2 * hei):int(rh1 * hei), int(cx - rw * wid):int(cx + rw * wid)]
+      
 def crop_hcenter(img, rw1_, rw2_, rh):
     try:
-        hei, wid, col = img.shape
-        print(hei,wid)
-    except:
-        print("input should be color image!")
+        if len(img.shape)==3: 
+            hei, wid, col = img.shape
+            color = True
+        else:
+            hei, wid = img.shape
+            color = False
+    except Exception as e:
+        print(e)
         return []
 
     cy, cx = hei / 2, wid / 2
@@ -42,15 +53,22 @@ def crop_hcenter(img, rw1_, rw2_, rh):
     if rw1 > 1 or rw2 < 0:
         print("height rate must between 0 to 1!")
         return []
-    return img[int(cy - rh * hei):int(cy + rh * hei),int(rw2 * wid):int(rw2 * wid + rw1 * wid) ,:]
-
+    
+    if color:
+        return img[int(cy - rh * hei):int(cy + rh * hei),int(rw2 * wid):int(rw1 * wid) ,:]
+    else:
+        return img[int(cy - rh * hei):int(cy + rh * hei),int(rw2 * wid):int(rw1 * wid)]
 
 def crop_whrate(img, rw1_, rw2_, rh1_, rh2_):
     try:
-        hei, wid, col = img.shape
-        print(hei,wid)
-    except:
-        print("input should be color image!")
+        if len(img.shape)==3: 
+            hei, wid, col = img.shape
+            color = True
+        else:
+            hei, wid = img.shape
+            color = False
+    except Exception as e:
+        print(e)
         return []
 
     cy, cx = hei / 2, wid / 2
@@ -67,8 +85,10 @@ def crop_whrate(img, rw1_, rw2_, rh1_, rh2_):
         print("height rate must between 0 to 1!")
         return []
     
-    return img[int(rh2 * hei):int(rh2 * hei + rh1 * hei),int(rw2 * wid):int(rw2 * wid + rw1 * wid) ,:]
-
+    if color:
+        return img[int(rh2 * hei):int(rh1 * hei),int(rw2 * wid):int(rw1 * wid) ,:]
+    else:
+        return img[int(rh2 * hei):int(rh1 * hei),int(rw2 * wid):int(rw1 * wid)]
 
 
 img1 = cv2.imread("ikaimg1.png")
