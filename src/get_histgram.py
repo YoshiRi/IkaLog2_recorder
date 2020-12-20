@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 img = cv2.imread("ours_m.png")
+img = cv2.imread("theirs_s.png")
 
 def show_img(path):
     img = cv2.imread(path)
@@ -26,23 +27,30 @@ def show_img(path):
     plt.legend()
     plt.show()
 
+def show_colortile(h_color,winmsg="mode color"):
+    hsv = np.ones((100, 100, 3), dtype="uint8")
+    hsv[:,:,0] = int( h_color )
+    hsv[:,:, 1] = 255
+    hsv[:,:, 2] = 255
+    bgr = cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
+    cv2.imshow(winmsg, bgr)
+    cv2.waitKey(100)
+
+
 def mask_modecolor(img):
     img2 = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     h, s, v = img2[:,:, 0], img2[:,:, 1], img2[:,:, 2]
     histbin = 32
     histwid = 256/histbin
     hist_h = cv2.calcHist([h], [0], None, [histbin], [0, 256])
-    #print(hist_h)
-    maxh = np.argmax(hist_h)
-    print(maxh)
+    maxhs = np.argsort(-hist_h.reshape(-1))
+    print(maxhs)
+    maxh = maxhs[0]
     plt.plot(hist_h, color='r', label="h")
     plt.show()
-    colorplt = np.ones((50, 50, 3), dtype="uint8")
-    colorplt[:,:,0] = int( (maxh+0.5) * histwid )
-    colorplt[:,:, 1] = 255
-    colorplt[:,:, 2] = 255
-    colorpltbgr = cv2.cvtColor(colorplt, cv2.COLOR_HSV2BGR)
-    cv2.imshow("most appeared color", colorpltbgr)
+
+    show_colortile((maxh+0.5) * histwid)
+    show_colortile((maxhs[1]+0.5) * histwid,"2nd")
     
     mask = (img2[:,:, 0] >= maxh * histwid) * (img2[:,:, 0] < (maxh + 1) * histwid)*1.0
     print(mask)
@@ -51,14 +59,6 @@ def mask_modecolor(img):
 
     cv2.waitKey(0)
     
-def show_colortile(h_color):
-    hsv = np.ones((100, 100, 3), dtype="uint8")
-    hsv[:,:,0] = int( h_color )
-    hsv[:,:, 1] = 255
-    hsv[:,:, 2] = 255
-    bgr = cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
-    cv2.imshow("most appeared color", bgr)
-    cv2.waitKey(100)
 
 def extract_modecolor(bgrimg,histbin = 32,showcolortile=False):
     hsvimg = cv2.cvtColor(bgrimg, cv2.COLOR_BGR2HSV)
