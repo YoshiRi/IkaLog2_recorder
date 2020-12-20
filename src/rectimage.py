@@ -100,7 +100,7 @@ def drawrect(frame,bbox,color=(0,255,0)):
 
 if __name__ == "__main__":
     
-    img1 = cv2.imread("ikaimg1.png")
+    img1 = cv2.imread("ikaimg4.png")
     
     if len(img1.shape)==3: 
         hei, wid, col = img1.shape
@@ -108,8 +108,8 @@ if __name__ == "__main__":
         hei, wid = img1.shape
 
     #cimg = crop_wcenter(img1, 0.25, 0.12 ,0.14)
-    cimg = crop_whrate(img1, 0.28, 0.457 ,0.0268, 0.1037)
-    cimg = crop_whrate(img1, 0.543, 0.72 ,0.0268, 0.1037)
+    cimg = crop_whrate(img1, 0.28, 0.457 ,0.0268, 0.1037) # 左，小さい方 
+    #cimg = crop_whrate(img1, 0.543, 0.72 ,0.0268, 0.1037) # 右，大きい方
     
     cv2.imshow("cropped",cimg)
     key = cv2.waitKey(0)
