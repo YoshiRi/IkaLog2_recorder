@@ -2,8 +2,6 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
-img = cv2.imread("ours_m.png")
-img = cv2.imread("theirs_s.png")
 
 def show_img(path):
     img = cv2.imread(path)
@@ -60,15 +58,24 @@ def mask_modecolor(img):
     cv2.waitKey(0)
     
 
+# 彩度が低い箇所をフィルタリングする
 def extract_modecolor(bgrimg,histbin = 32,showcolortile=False):
     hsvimg = cv2.cvtColor(bgrimg, cv2.COLOR_BGR2HSV)
-    h, s, v = img2[:,:, 0], img2[:,:, 1], img2[:,:, 2]
+    h, s, v = hsvimg[:,:, 0], hsvimg[:,:, 1], hsvimg[:,:, 2]
     histwid = 256 / histbin
     assert isinstance(histbin, int), print("histbin must be power of 2")
-    maxh = np.argmax(hist_h)
-    show_colortile((maxh+0.5) * histwid)
-    
+    hist_h = cv2.calcHist([h], [0], None, [histbin], [0, 256])
+    maxhs = np.argsort(-hist_h.reshape(-1))
+    maxh = maxhs[0]
+    if showcolortile:
+        show_colortile((maxh + 0.5) * histwid)
+    # return top 3 colors
+    return [(maxhs[0] + 0.5) * histwid,(maxhs[1] + 0.5) * histwid,(maxhs[2] + 0.5) * histwid]
 
 
-mask_modecolor(img)
-#show_img("ours_m.png")
+if __name__ == "__main__":
+    img = cv2.imread("ours_m.png")
+    img = cv2.imread("theirs_m.png")
+
+    mask_modecolor(img)
+    #show_img("ours_m.png")
