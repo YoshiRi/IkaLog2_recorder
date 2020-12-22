@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
@@ -40,7 +43,11 @@ def mask_modecolor(img):
     h, s, v = img2[:,:, 0], img2[:,:, 1], img2[:,:, 2]
     histbin = 32
     histwid = 256/histbin
-    hist_h = cv2.calcHist([h], [0], None, [histbin], [0, 256])
+    # 彩度が低い箇所をフィルタリングする
+    mask = np.zeros(v.shape)
+    mask[v > 150] = 255
+    # calc histogram
+    hist_h = cv2.calcHist([h], [0], mask.astype("uint8"), [histbin], [0, 256])
     maxhs = np.argsort(-hist_h.reshape(-1))
     print(maxhs)
     maxh = maxhs[0]
@@ -50,21 +57,25 @@ def mask_modecolor(img):
     show_colortile((maxh+0.5) * histwid)
     show_colortile((maxhs[1]+0.5) * histwid,"2nd")
     
-    mask = (img2[:,:, 0] >= maxh * histwid) * (img2[:,:, 0] < (maxh + 1) * histwid)*1.0
-    print(mask)
-    cv2.imshow("mask", mask)
+    hmask = (img2[:,:, 0] >= maxh * histwid) * (img2[:,:, 0] < (maxh + 1) * histwid) * 1.0
+    smask = (s > 120) * 1.0
+    cv2.imshow("hmask", hmask)
+    cv2.imshow("vmask", mask)
+    cv2.imshow("smask", smask)
     cv2.imshow("orig", img)
 
     cv2.waitKey(0)
     
 
-# 彩度が低い箇所をフィルタリングする
 def extract_modecolor(bgrimg,histbin = 32,showcolortile=False):
     hsvimg = cv2.cvtColor(bgrimg, cv2.COLOR_BGR2HSV)
     h, s, v = hsvimg[:,:, 0], hsvimg[:,:, 1], hsvimg[:,:, 2]
     histwid = 256 / histbin
     assert isinstance(histbin, int), print("histbin must be power of 2")
-    hist_h = cv2.calcHist([h], [0], None, [histbin], [0, 256])
+    # 彩度が低い箇所をフィルタリングする
+    mask = v > 120
+    # calc histogram
+    hist_h = cv2.calcHist([h], [0], mask, [histbin], [0, 256])
     maxhs = np.argsort(-hist_h.reshape(-1))
     maxh = maxhs[0]
     if showcolortile:
@@ -75,7 +86,7 @@ def extract_modecolor(bgrimg,histbin = 32,showcolortile=False):
 
 if __name__ == "__main__":
     img = cv2.imread("ours_m.png")
-    img = cv2.imread("theirs_m.png")
+    #img = cv2.imread("theirs_m.png")
 
     mask_modecolor(img)
     #show_img("ours_m.png")
